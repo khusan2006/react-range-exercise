@@ -44,7 +44,7 @@ const FormRange = () => {
   
   return (
    <div className="flex flex-col ">
-     <div className="flex flex-col py-4 px-6 rounded-md  w-[40rem] bg-gray-200">
+     <div className="flex flex-col py-4 px-6 rounded-md  w-[25rem] bg-gray-200">
       <div className="flex items-center justify-between">
         <h3>количество</h3>
         <input
