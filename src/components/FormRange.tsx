@@ -38,6 +38,8 @@ const FormRange = () => {
       alert(`Added ${quantity} items to cart`);
   
       // Reset the loading state
+      setDiscount(0)
+      setQuantity(0)
       setAddingToCart(false);
     }, 1000); // Simulate a 1-second delay
   };
