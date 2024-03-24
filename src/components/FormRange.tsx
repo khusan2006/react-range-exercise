@@ -1,18 +1,33 @@
 import { useState } from "react";
-
-const FormRange = () => {
-// Constants
+const FormRange = ({
+  addedPrdouct,
+  setAddedProduct,
+}: {
+  addedPrdouct: {
+    name: string;
+    img: string;
+    price: number;
+  } | null;
+  setAddedProduct: React.Dispatch<
+    React.SetStateAction<{
+      name: string;
+      img: string;
+      price: number;
+    } | null>
+  >;
+}) => {
+  // Constants
   const MINIMUM_ITEM = 1;
   const MAXIMUM_ITEM = 300;
-  const PRICE_PER_ITEM = 100;
-//   setters
+  const PRICE_PER_ITEM = addedPrdouct?.price || 100;
+  //   setters
   const [quantity, setQuantity] = useState<number>(MINIMUM_ITEM);
   const [discount, setDiscount] = useState(0);
-  const [addingToCart, setAddingToCart] = useState(false)
+  const [addingToCart, setAddingToCart] = useState(false);
   const totalPrice = quantity * PRICE_PER_ITEM;
   const totalPriceWithDiscount = totalPrice - totalPrice * (discount / 100);
-  
-// handle changes in range and input elements
+
+  // handle changes in range and input elements
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newQuantity = parseInt(e.target.value);
     const clampedQuantity = Math.min(Math.max(newQuantity, MINIMUM_ITEM), 9999);
@@ -28,77 +43,91 @@ const FormRange = () => {
       setDiscount(0);
     }
   };
-//handles adding items to the cart
+  //handles adding items to the cart
   const addToCart = () => {
     setAddingToCart(true);
-  
+
     // Simulate an API call
     setTimeout(() => {
-     
       alert(`Added ${quantity} items to cart`);
-  
+
       // Reset the loading state
-      setDiscount(0)
-      setQuantity(0)
+      setDiscount(0);
+      setQuantity(0);
       setAddingToCart(false);
+      setAddedProduct(null)
     }, 1000); // Simulate a 1-second delay
   };
-  
+  if (!addedPrdouct) return;
   return (
-   <div className="flex flex-col ">
-     <div className="flex flex-col py-4 px-6 rounded-md  w-[25rem] bg-gray-200">
-      <div className="flex items-center justify-between">
-        <h3>количество</h3>
+    <div className="flex flex-col bg-gray-200 h-[fit-content] py-4 px-6 rounded-md  w-[25rem]">
+      <div className="flex gap-4 items-center mb-4">
+        <img
+          className="w-16 h-16"
+          src={addedPrdouct.img}
+          alt={addedPrdouct.name}
+        />
+        <p>{addedPrdouct.name}</p>
+      </div>
+
+      <div className="flex flex-col   ">
+        <div className="flex items-center justify-between">
+          <h3>количество</h3>
+          <input
+            type="number"
+            value={quantity}
+            onChange={handleChange}
+            className="w-[55px] text-sm border-[1px] border-black rounded-md  px-1 text-black appearance-none"
+          />
+        </div>
+
         <input
-          type="number"
+          type="range"
+          min={MINIMUM_ITEM}
+          max={MAXIMUM_ITEM}
           value={quantity}
           onChange={handleChange}
-          className="w-[55px] text-sm border-[1px] border-black rounded-md  px-1 text-black appearance-none"
+          className="w-full mt-4"
         />
-      </div>
 
-      <input
-        type="range"
-        min={MINIMUM_ITEM}
-        max={MAXIMUM_ITEM}
-        value={quantity}
-        onChange={handleChange}
-        className="w-full mt-4"
-      />
+        <div className="text-xs flex justify-between items-center mt-1">
+          <p className="flex flex-col">
+            3% <span>30шт </span>
+          </p>
+          <p className="flex flex-col items-center">
+            5% <span>100шт </span>
+          </p>
+          <p className="flex flex-col items-end">
+            7% <span>300шт </span>
+          </p>
+        </div>
 
-      <div className="text-xs flex justify-between items-center mt-1">
-        <p className="flex flex-col">
-          3% <span>30шт </span>
-        </p>
-        <p className="flex flex-col items-center">
-          5% <span>100шт </span>
-        </p>
-        <p className="flex flex-col items-end">
-          7% <span>300шт </span>
-        </p>
-      </div>
+        <div className="flex items-center justify-between mt-3">
+          <p>стоимость тиража:</p>
+          <p>${totalPrice.toFixed(2)}</p>
+        </div>
 
-      <div className="flex items-center justify-between mt-3">
-        <p>стоимость тиража:</p>
-        <p>${totalPrice.toFixed(2)}</p>
-      </div>
+        <div className="flex items-center justify-between mt-3">
+          <p>скидка:</p>
+          <p>{discount}%</p>
+        </div>
 
-      <div className="flex items-center justify-between mt-3">
-        <p>скидка:</p>
-        <p>{discount}%</p>
+        <div className="w-full h-[1px] bg-black my-3" />
+        <div className="flex items-center justify-between mt-3">
+          <p>итоговая стоимость:</p>
+          <p>${totalPriceWithDiscount.toFixed(2)}</p>
+        </div>
       </div>
-      
-      <div className="w-full h-[1px] bg-black my-3" />
-      <div className="flex items-center justify-between mt-3">
-        <p>итоговая стоимость:</p>
-        <p>${totalPriceWithDiscount.toFixed(2)}</p>
-      </div>
-     
-    </div>
-    <button onClick={addToCart} className={`w-full bg-red-600 text-white py-2 px-4 mt-4 rounded-md ${addingToCart ? 'opacity-50' : ""}`} disabled={addingToCart}>
+      <button
+        onClick={addToCart}
+        className={`w-full bg-red-600 text-white py-2 px-4 mt-4 rounded-md ${
+          addingToCart ? "opacity-50" : ""
+        }`}
+        disabled={addingToCart}
+      >
         {addingToCart ? "добавление в корзину" : "  в корзину"}
-    </button>
-   </div>
+      </button>
+    </div>
   );
 };
 
